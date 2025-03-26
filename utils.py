@@ -4,7 +4,6 @@ import json
 
 from phoenix_setup import tracer_provider, instrumenting_module_name
 from openinference.semconv.trace import SpanAttributes, OpenInferenceMimeTypeValues
-from openinference.instrumentation.config import OpenInferenceSpan, TracerProvider
 from opentelemetry.trace import StatusCode, Status
 
 
