@@ -17,6 +17,8 @@ LLM_SETTINGS = {
     "min_score": 0.6,
 }
 
+SYSTEM_PROMPT = """You are a helpful Discord bot that answers questions and provides information to users."""
+
 
 def ask_llm(query: str) -> str:
     url = f"https://api.edenai.run/v2/aiproducts/askyoda/v2/{os.getenv('RAG_PROJECT_ID')}/ask_llm"
@@ -27,6 +29,7 @@ def ask_llm(query: str) -> str:
     payload = {
         **LLM_SETTINGS,
         "query": query,
+        "chatbot_global_action": SYSTEM_PROMPT,
     }
     with tracer_provider.get_tracer(
         instrumenting_module_name=instrumenting_module_name
@@ -38,7 +41,14 @@ def ask_llm(query: str) -> str:
             )
             data = response.json()
             response.raise_for_status()
+
             span.set_status(Status(StatusCode.OK))
+
+            span.set_input(
+                format_input_messages(SYSTEM_PROMPT, query),
+                mime_type=OpenInferenceMimeTypeValues.JSON.value,
+            )
+
             span.set_attribute(SpanAttributes.OPENINFERENCE_SPAN_KIND, "llm")
 
             span.set_output(
@@ -61,11 +71,20 @@ def ask_llm(query: str) -> str:
             raise
 
 
-def format_input_messages(query: str) -> str:
+def format_input_messages(system_prompt: str, query: str) -> str:
     """Format the input messages for the LLM API."""
     return json.dumps(
         {
             "messages": [
+                {
+                    "role": "assistant",
+                    "content": [
+                        {
+                            "type": "text",
+                            "content": {"text": system_prompt},
+                        }
+                    ],
+                },
                 {
                     "role": "user",
                     "content": [
