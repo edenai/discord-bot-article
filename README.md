@@ -1,6 +1,6 @@
 # Discord Bot with LLM Integration
 
-This project is a Discord bot that integrates with a Large Language Model (LLM) to provide intelligent responses to user queries. The bot is built using Python and leverages the `discord.py` library for Discord interactions and an external LLM API for natural language processing.
+This project is a Discord bot that uses Retrieval-Augmented Generation (RAG) from EdenAI as a chatbot to respond to users' questions. Built with Python, it leverages the `discord.py` library for Discord interactions and integrates with a Large Language Model (LLM) via EdenAI's API to deliver context-aware, intelligent responses.
 
 ## Features
 
