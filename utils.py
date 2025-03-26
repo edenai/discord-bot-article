@@ -44,16 +44,26 @@ def ask_llm(query: str) -> str:
 
             span.set_status(Status(StatusCode.OK))
 
-            span.set_input(
+            span.set_attribute(
+                SpanAttributes.INPUT_VALUE,
+                query,
+            )
+
+            span.set_attribute(
+                SpanAttributes.LLM_INPUT_MESSAGES,
                 format_input_messages(SYSTEM_PROMPT, query),
-                mime_type=OpenInferenceMimeTypeValues.JSON.value,
             )
 
             span.set_attribute(SpanAttributes.OPENINFERENCE_SPAN_KIND, "llm")
 
-            span.set_output(
+            span.set_attribute(
+                SpanAttributes.OUTPUT_VALUE,
+                data["result"],
+            )
+
+            span.set_attribute(
+                SpanAttributes.LLM_OUTPUT_MESSAGES,
                 format_output_messages(data["result"]),
-                mime_type=OpenInferenceMimeTypeValues.JSON.value,
             )
             span.set_attributes(
                 {
@@ -67,7 +77,7 @@ def ask_llm(query: str) -> str:
             return data["result"]
         except Exception as e:
             span.set_status(Status(StatusCode.ERROR, str(e)))
-            span.record_exception()
+            span.record_exception(e)
             raise
 
 
@@ -77,7 +87,7 @@ def format_input_messages(system_prompt: str, query: str) -> str:
         {
             "messages": [
                 {
-                    "role": "assistant",
+                    "role": "system",
                     "content": [
                         {
                             "type": "text",

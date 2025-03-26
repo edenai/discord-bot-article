@@ -28,6 +28,7 @@ async def ask(ctx, *, query: str):
             response = ask_llm(query)
             await ctx.send(response)
         except Exception as e:
+            print(e)
             await ctx.send("Sorry something went wrong. Please try again later.😒")
 
 
