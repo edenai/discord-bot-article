@@ -29,7 +29,7 @@ def ask_llm(query: str) -> str:
     payload = {
         **LLM_SETTINGS,
         "query": query,
-        "chatbot_global_action": SYSTEM_PROMPT,
+        "chatbot_global_action": SYSTEM_PROMPT,  # You can set it directly in the ui
     }
     with tracer_provider.get_tracer(
         instrumenting_module_name=instrumenting_module_name
